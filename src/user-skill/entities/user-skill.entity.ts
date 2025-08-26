@@ -1,1 +1,16 @@
-export class UserSkill {}
+import { User } from "src/user/entities/user.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+
+@Entity({
+    name: "user-skill"
+})
+export class UserSkill {
+    @PrimaryGeneratedColumn({ unsigned: true })
+    id: number;
+
+    @Column({ type: "varchar", nullable: false })
+    skill: string;
+
+    @ManyToOne(() => User, (user) => user.skills, { onDelete: "CASCADE" })
+    user: User
+}

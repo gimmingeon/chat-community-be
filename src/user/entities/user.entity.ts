@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { UserSkill } from "src/user-skill/entities/user-skill.entity";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({
     name: "user"
@@ -15,6 +16,9 @@ export class User {
 
     @Column({ type: 'varchar', unique: true, nullable: false })
     nickname: string;
+
+    @OneToMany(() => UserSkill, (userSkill) => userSkill.user, { cascade: true })
+    skills: UserSkill[];
 
     @CreateDateColumn({ type: "timestamp" })
     createdAt: Date;
