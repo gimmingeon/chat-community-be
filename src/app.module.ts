@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { UserSkillModule } from './user-skill/user-skill.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { UserSkillModule } from './user-skill/user-skill.module';
       }),
     }),
     UserModule,
-    UserSkillModule
+    UserSkillModule,
+    PostModule
   ],
   controllers: [],
   providers: [],

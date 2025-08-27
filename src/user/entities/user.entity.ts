@@ -1,3 +1,4 @@
+import { Post } from "src/post/entities/post.entity";
 import { UserSkill } from "src/user-skill/entities/user-skill.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -19,6 +20,9 @@ export class User {
 
     @OneToMany(() => UserSkill, (userSkill) => userSkill.user, { cascade: true })
     skills: UserSkill[];
+
+    @OneToMany(() => Post, (post) => post.user, { cascade: true })
+    post: Post[];
 
     @CreateDateColumn({ type: "timestamp" })
     createdAt: Date;
