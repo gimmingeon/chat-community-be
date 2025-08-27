@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { UserSkillModule } from './user-skill/user-skill.module';
 import { PostModule } from './post/post.module';
 import { PostScrapModule } from './post-scrap/post-scrap.module';
+import { PostHashtagModule } from './post-hashtag/post-hashtag.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { PostScrapModule } from './post-scrap/post-scrap.module';
     UserModule,
     UserSkillModule,
     PostModule,
-    PostScrapModule
+    PostScrapModule,
+    PostHashtagModule
   ],
   controllers: [],
   providers: [],

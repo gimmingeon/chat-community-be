@@ -8,9 +8,9 @@ export class UserSkill {
     @PrimaryGeneratedColumn({ unsigned: true })
     id: number;
 
-    @Column({ type: "varchar", nullable: false })
+    @Column({ type: "varchar", nullable: true })
     skill: string;
 
     @ManyToOne(() => User, (user) => user.skills, { onDelete: "CASCADE" })
-    user: User
+    user: User;
 }
