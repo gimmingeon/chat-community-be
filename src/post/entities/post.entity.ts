@@ -4,6 +4,7 @@ import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGenerate
 import { PostType } from "./type/postType.type";
 import { PostScrap } from "src/post-scrap/entities/post-scrap.entity";
 import { PostHashtag } from "src/post-hashtag/entities/post-hashtag.entity";
+import { Comment } from "src/comment/entities/comment.entity";
 
 @Entity({
     name: "post"
@@ -25,12 +26,15 @@ export class Post {
     @ManyToOne(() => User, (user) => user.post, { onDelete: "CASCADE" })
     user: User;
 
-    // 여기서 casecade는 post가 저장될때 같이 저장되는 거임
+    // 여기서 casecade는 post가 저장될때 같이 저장되고 같이 삭제되는 거임
     @OneToMany(() => PostScrap, (postScrap) => postScrap.post, { cascade: true })
     postScrap: PostScrap[];
 
     @OneToMany(() => PostHashtag, (postHashtag) => postHashtag.post, { cascade: true })
     postHashtag: PostHashtag[];
+
+    @OneToMany(() => Comment, (comment) => comment.post)
+    comment: Comment[];
 
     @CreateDateColumn({ type: "timestamp" })
     createdAt: Date;
