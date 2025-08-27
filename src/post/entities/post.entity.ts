@@ -1,7 +1,8 @@
 import { IsEnum } from "class-validator";
 import { User } from "src/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { PostType } from "./type/postType.type";
+import { PostScrap } from "src/post-scrap/entities/post-scrap.entity";
 
 @Entity({
     name: "post"
@@ -22,6 +23,9 @@ export class Post {
 
     @ManyToOne(() => User, (user) => user.post, { onDelete: "CASCADE" })
     user: User;
+
+    @OneToMany(() => PostScrap, (postScrap) => postScrap.post, { cascade: true })
+    postScrap: PostScrap[];
 
     @CreateDateColumn({ type: "timestamp" })
     createdAt: Date;

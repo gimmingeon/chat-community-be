@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { UserSkillModule } from './user-skill/user-skill.module';
 import { PostModule } from './post/post.module';
+import { PostScrapModule } from './post-scrap/post-scrap.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { PostModule } from './post/post.module';
     }),
     UserModule,
     UserSkillModule,
-    PostModule
+    PostModule,
+    PostScrapModule
   ],
   controllers: [],
   providers: [],

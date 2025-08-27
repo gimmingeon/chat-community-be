@@ -1,3 +1,4 @@
+import { PostScrap } from "src/post-scrap/entities/post-scrap.entity";
 import { Post } from "src/post/entities/post.entity";
 import { UserSkill } from "src/user-skill/entities/user-skill.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
@@ -23,6 +24,9 @@ export class User {
 
     @OneToMany(() => Post, (post) => post.user, { cascade: true })
     post: Post[];
+
+    @OneToMany(() => PostScrap, (postScrap) => postScrap.user, { cascade: true })
+    postScrap: PostScrap[];
 
     @CreateDateColumn({ type: "timestamp" })
     createdAt: Date;
