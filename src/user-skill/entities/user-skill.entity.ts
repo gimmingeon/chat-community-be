@@ -2,7 +2,7 @@ import { User } from "src/user/entities/user.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({
-    name: "userSkill"
+    name: "user_skill"
 })
 export class UserSkill {
     @PrimaryGeneratedColumn({ unsigned: true })

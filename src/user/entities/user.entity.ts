@@ -1,3 +1,4 @@
+import { Comment } from "src/comment/entities/comment.entity";
 import { PostScrap } from "src/post-scrap/entities/post-scrap.entity";
 import { Post } from "src/post/entities/post.entity";
 import { UserSkill } from "src/user-skill/entities/user-skill.entity";
@@ -22,10 +23,13 @@ export class User {
     @OneToMany(() => UserSkill, (userSkill) => userSkill.user, { cascade: true })
     skills: UserSkill[];
 
-    @OneToMany(() => Post, (post) => post.user, { cascade: true })
+    @OneToMany(() => Post, (post) => post.user)
     post: Post[];
 
-    @OneToMany(() => PostScrap, (postScrap) => postScrap.user, { cascade: true })
+    @OneToMany(() => Comment, (comment) => comment.user)
+    comment: Comment[];
+
+    @OneToMany(() => PostScrap, (postScrap) => postScrap.user)
     postScrap: PostScrap[];
 
     @CreateDateColumn({ type: "timestamp" })

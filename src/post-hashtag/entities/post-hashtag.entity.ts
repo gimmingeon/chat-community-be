@@ -2,7 +2,7 @@ import { Post } from "src/post/entities/post.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({
-    name: "postHashtag"
+    name: "post_hashtag"
 })
 export class PostHashtag {
     @PrimaryGeneratedColumn({ unsigned: true })

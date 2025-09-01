@@ -1,7 +1,8 @@
 import { Post } from "src/post/entities/post.entity";
+import { User } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-Entity({
+@Entity({
     name: "comment"
 })
 export class Comment {
@@ -16,4 +17,7 @@ export class Comment {
 
     @ManyToOne(() => Post, (post) => post.comment, { onDelete: "CASCADE" })
     post: Post;
+
+    @ManyToOne(() => User, (user) => user.comment)
+    user: User;
 }

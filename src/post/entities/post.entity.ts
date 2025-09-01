@@ -27,7 +27,7 @@ export class Post {
     user: User;
 
     // 여기서 casecade는 post가 저장될때 같이 저장되고 같이 삭제되는 거임
-    @OneToMany(() => PostScrap, (postScrap) => postScrap.post, { cascade: true })
+    @OneToMany(() => PostScrap, (postScrap) => postScrap.post)
     postScrap: PostScrap[];
 
     @OneToMany(() => PostHashtag, (postHashtag) => postHashtag.post, { cascade: true })

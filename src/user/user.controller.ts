@@ -1,20 +1,36 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @Post("/signup")
+  async signup(@Body() createUserDto: CreateUserDto) {
+    await this.userService.signup(createUserDto);
+
+    return { statusCode: 201, message: "회원가입에 성공했습니다." };
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Post("/login")
+  async login(
+    @Body() loginUserDto: LoginUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const token = await this.userService.login(loginUserDto);
+    res.cookie("Authorizaion", `Bearer ${token.access_token}`);
+
+    return { statusCode: 201, message: "로그인 성공" };
+  }
+
+  @Get("/allUserInfo")
+  async findAll() {
+    return await this.userService.findAllMember();
   }
 
   @Get(':id')

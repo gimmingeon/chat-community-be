@@ -3,7 +3,7 @@ import { User } from "src/user/entities/user.entity";
 import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({
-    name: "postScrap"
+    name: "post_scrap"
 })
 export class PostScrap {
     @PrimaryGeneratedColumn({ unsigned: true })
