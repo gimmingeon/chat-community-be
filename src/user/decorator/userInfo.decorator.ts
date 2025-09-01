@@ -12,6 +12,8 @@ export const UserInfo = createParamDecorator(
         // user에 request에서 가져온 정보 저장 (여기서는 cookie에 저장된 jwt 토큰의 유저 정보)
         const user = request.user;
 
+        console.log(user);
+
         if (!user) return null;
 
         // 여러 필드를 요청한 경우 객체로 반환하는 코드

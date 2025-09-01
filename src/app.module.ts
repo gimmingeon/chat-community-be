@@ -7,6 +7,7 @@ import { PostModule } from './post/post.module';
 import { PostScrapModule } from './post-scrap/post-scrap.module';
 import { PostHashtagModule } from './post-hashtag/post-hashtag.module';
 import { CommentModule } from './comment/comment.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { CommentModule } from './comment/comment.module';
     PostModule,
     PostScrapModule,
     PostHashtagModule,
-    CommentModule
+    CommentModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],

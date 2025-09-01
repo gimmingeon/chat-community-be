@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { UserInfo } from './decorator/userInfo.decorator';
 
 @Controller('user')
 export class UserController {
@@ -23,7 +24,7 @@ export class UserController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const token = await this.userService.login(loginUserDto);
-    res.cookie("Authorizaion", `Bearer ${token.access_token}`);
+    res.cookie('authorization', `Bearer ${token.access_token}`);
 
     return { statusCode: 201, message: "로그인 성공" };
   }
@@ -33,9 +34,10 @@ export class UserController {
     return await this.userService.findAllMember();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @UseGuards(AuthGuard("jwt"))
+  @Get('/myInfo')
+  async myInfo(@UserInfo('id') userId: number) {
+    return await this.userService.myInfo(userId);
   }
 
   @Patch(':id')

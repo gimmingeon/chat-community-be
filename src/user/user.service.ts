@@ -45,7 +45,7 @@ export class UserService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-    const { email, password } = loginUserDto
+    const { email, password } = loginUserDto;
 
     const user = await this.userRepository.findOne({
       where: { email },
@@ -55,7 +55,7 @@ export class UserService {
       throw new UnauthorizedException("이메일 또는 비밀번호를 확인해주세요.");
     }
 
-    const payload = { sub: user.id, userEmail: user.email }
+    const payload = { sub: user.id, email: user.email }
 
     return { access_token: await this.jwtService.signAsync(payload) }
   }
@@ -68,22 +68,41 @@ export class UserService {
       .leftJoinAndSelect("user.post", "post")
       .select([
         "user.nickname",
-        "skill.name",   // skill의 name 컬럼만
-        "post.title"    // post의 title 컬럼만
+        "skill.skill",
+        "post.id",
+        "post.title"
       ])
       .getMany();
 
     return users;
   }
 
-  async findByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email });
+  async myInfo(userId: number) {
 
+    const users = await this.userRepository
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.skills", "skill")
+      .leftJoinAndSelect("user.post", "post")
+      .select([
+        "user.nickname",
+        "user.email",
+        "skill.skill",
+        "post.id",
+        "post.title",
+        "post.postType"
+      ])
+      .where("user.id = :id", { id: userId })
+      .getOne();
+
+    return users;
   }
 
+  async findByEmail(email: string) {
+    return await this.userRepository.findOneBy({ email });
+  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findById(userId: number) {
+    return await this.userRepository.findOneBy({ id: userId });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

@@ -1,7 +1,7 @@
 export enum PostType {
-    nomal,
-    question,
-    project,
-    tip,
+    nomal = "nomal",
+    question = "question",
+    project = "project",
+    tip = "tip",
 
 }
