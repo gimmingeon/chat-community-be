@@ -11,7 +11,7 @@ export class CommentController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post("/:postId")
-  async create(
+  async createComment(
     @Param('postId') postId: number,
     @Body() createCommentDto: CreateCommentDto,
     @UserInfo("id") userId: number
@@ -19,14 +19,11 @@ export class CommentController {
     return await this.commentService.createComment(createCommentDto, postId, userId);
   }
 
-  @Get()
-  findAll() {
-    return this.commentService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentService.findOne(+id);
+  @Get("/:postId")
+  async findAllComment(
+    @Param("postId") postId: number,
+  ) {
+    return await this.commentService.findAllComment(postId);
   }
 
   @Patch(':id')
