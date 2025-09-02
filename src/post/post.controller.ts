@@ -32,13 +32,24 @@ export class PostController {
     return await this.postService.findOnePost(id);
   }
 
+  @UseGuards(AuthGuard("jwt"))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(+id, updatePostDto);
+  async updatePost(
+    @Param('id') id: number,
+    @Body() updatePostDto: CreatePostDto,
+    @UserInfo("id") userId: number
+  ) {
+    await this.postService.updatePost(id, userId, updatePostDto);
+    return { message: "게시글이 수정되었습니다." }
   }
 
+  @UseGuards(AuthGuard("jwt"))
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  async remove(
+    @Param('id') id: number,
+    @UserInfo("id") userId: number
+  ) {
+    await this.postService.removePost(id, userId)
+    return { statusCode: 201, message: "게시글이 삭제되었습니다." }
   }
 }

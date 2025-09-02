@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -66,11 +66,38 @@ export class PostService {
     return post
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async updatePost(id: number, userId: number, updatePostDto: CreatePostDto) {
+    const { title, content, postType } = updatePostDto
+
+    const post = await this.postRepository.findOne({
+      where: { id },
+      relations: { user: true }
+    });
+
+    if (post.user.id !== userId) {
+      throw new ForbiddenException("게시글은 작성한 유저만 삭제가 가능합니다.");
+    }
+
+    await this.postRepository.update(
+      { id },
+      {
+        title,
+        content,
+        postType
+      }
+    )
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async removePost(id: number, userId: number) {
+    const post = await this.postRepository.findOne({
+      where: { id },
+      relations: { user: true }
+    });
+
+    if (post.user.id !== userId) {
+      throw new ForbiddenException("게시글은 작성한 유저만 삭제가 가능합니다.")
+    }
+
+    await this.postRepository.delete({ id });
   }
 }
