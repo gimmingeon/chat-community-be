@@ -40,6 +40,11 @@ export class UserController {
     return await this.userService.myInfo(userId);
   }
 
+  @Get('/userInfo/:userId')
+  async userInfo(@Param("userId") userId: number) {
+    return await this.userService.userInfo(userId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);

@@ -67,10 +67,9 @@ export class UserService {
       .leftJoinAndSelect("user.skills", "skill")
       .leftJoinAndSelect("user.post", "post")
       .select([
+        "user.id",
         "user.nickname",
         "skill.skill",
-        "post.id",
-        "post.title"
       ])
       .getMany();
 
@@ -84,8 +83,29 @@ export class UserService {
       .leftJoinAndSelect("user.skills", "skill")
       .leftJoinAndSelect("user.post", "post")
       .select([
+        "user.id",
         "user.nickname",
         "user.email",
+        "skill.skill",
+        "post.id",
+        "post.title",
+        "post.postType"
+      ])
+      .where("user.id = :id", { id: userId })
+      .getOne();
+
+    return users;
+  }
+
+  async userInfo(userId: number) {
+
+    const users = await this.userRepository
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.skills", "skill")
+      .leftJoinAndSelect("user.post", "post")
+      .select([
+        "user.id",
+        "user.nickname",
         "skill.skill",
         "post.id",
         "post.title",
