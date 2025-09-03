@@ -47,11 +47,43 @@ export class CommentService {
     return comment;
   }
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
+  async updateComment(
+    id: number,
+    updateCommentDto: UpdateCommentDto,
+    userId: number
+  ) {
+    const { content } = updateCommentDto;
+
+    const comment = await this.commentRepository.findOne({
+      where: { id },
+      relations: { user: true }
+    });
+
+    if (comment.user.id !== userId) {
+      throw new Error("작성자만 수정이 가능합니다.");
+    }
+
+    return await this.commentRepository.update(
+      { id },
+      {
+        content
+      }
+    )
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  async removeComment(
+    id: number,
+    userId: number
+  ) {
+    const comment = await this.commentRepository.findOne({
+      where: { id },
+      relations: { user: true }
+    });
+
+    if (comment.user.id !== userId) {
+      throw new Error("작성자만 삭제가 가능합니다.");
+    }
+
+    await this.commentRepository.delete({ id });
   }
 }

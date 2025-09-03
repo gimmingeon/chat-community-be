@@ -26,13 +26,26 @@ export class CommentController {
     return await this.commentService.findAllComment(postId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(+id, updateCommentDto);
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('/:id')
+  async updateComment(
+    @Param('id') id: number,
+    @Body() updateCommentDto: CreateCommentDto,
+    @UserInfo("id") userId: number
+  ) {
+    await this.commentService.updateComment(id, updateCommentDto, userId);
+
+    return { message: "댓글을 삭제했습니다." }
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentService.remove(+id);
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('/:id')
+  async removeComment(
+    @Param('id') id: number,
+    @UserInfo("id") userId: number
+  ) {
+    await this.commentService.removeComment(id, userId);
+
+    return { message: "댓글을 삭제했습니다." }
   }
 }
