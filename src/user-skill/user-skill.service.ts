@@ -36,7 +36,17 @@ export class UserSkillService {
     return `This action updates a #${id} userSkill`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} userSkill`;
+  async removeSkill(id: number, userId: number) {
+
+    const skill = await this.userSkillRepository.findOne({
+      where: { id },
+      relations: { user: true }
+    });
+
+    if (skill.user.id !== userId) {
+      throw new Error("본인만 스킬을 삭제할 수 있습니다.");
+    }
+
+    await this.userSkillRepository.delete({ id });
   }
 }

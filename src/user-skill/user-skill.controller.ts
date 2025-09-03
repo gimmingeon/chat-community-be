@@ -33,8 +33,12 @@ export class UserSkillController {
     return this.userSkillService.update(+id, updateUserSkillDto);
   }
 
+  @UseGuards(AuthGuard("jwt"))
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userSkillService.remove(+id);
+  async removeSkill(
+    @Param('id') id: number,
+    @UserInfo("id") userId: number,
+  ) {
+    await this.userSkillService.removeSkill(id, userId);
   }
 }
