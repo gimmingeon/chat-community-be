@@ -12,4 +12,6 @@ export class CreatePostDto {
 
     @IsEnum(PostType)
     postType: PostType;
+
+    hashTag: string[]
 }

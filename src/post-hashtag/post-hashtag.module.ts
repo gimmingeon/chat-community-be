@@ -8,5 +8,6 @@ import { PostHashtag } from './entities/post-hashtag.entity';
   imports: [TypeOrmModule.forFeature([PostHashtag])],
   controllers: [PostHashtagController],
   providers: [PostHashtagService],
+  exports: [PostHashtagService]
 })
 export class PostHashtagModule { }

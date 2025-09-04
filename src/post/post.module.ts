@@ -6,13 +6,14 @@ import { Post } from './entities/post.entity';
 import { PostHashtagModule } from 'src/post-hashtag/post-hashtag.module';
 import { UserModule } from 'src/user/user.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { PostHashtag } from 'src/post-hashtag/entities/post-hashtag.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Post]),
-    PostHashtagModule,
+    TypeOrmModule.forFeature([Post, PostHashtag]),
     UserModule,
-    AuthModule
+    AuthModule,
+    PostHashtagModule
   ],
   controllers: [PostController],
   providers: [PostService],

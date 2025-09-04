@@ -82,6 +82,7 @@ export class UserService {
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.skills", "skill")
       .leftJoinAndSelect("user.post", "post")
+      .leftJoinAndSelect("user.postScrap", "postScrap")
       .select([
         "user.id",
         "user.nickname",
@@ -89,7 +90,8 @@ export class UserService {
         "skill.skill",
         "post.id",
         "post.title",
-        "post.postType"
+        "post.postType",
+        "postScrap.post.id"
       ])
       .where("user.id = :id", { id: userId })
       .getOne();

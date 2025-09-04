@@ -3,8 +3,9 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
+import { PostHashtagService } from 'src/post-hashtag/post-hashtag.service';
 
 @Injectable()
 export class PostService {
@@ -12,22 +13,46 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly postHashtagService: PostHashtagService,
+    private readonly dataSource: DataSource,
   ) { }
 
   async createPost(createPostDto: CreatePostDto, userId: number) {
-    const { title, content, postType } = createPostDto;
+    const { title, content, postType, hashTag } = createPostDto;
 
     const user = await this.userService.findById(userId);
 
-    const post = this.postRepository.create({
-      title,
-      content,
-      postType,
-      user
-    });
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    await this.postRepository.save(post);
+    try {
+      const post = queryRunner.manager.create(Post, { title, content, postType, user });
+      await queryRunner.manager.save(Post, post);
+
+      await this.postHashtagService.createHashtag(hashTag, post.id, queryRunner.manager);
+
+      await queryRunner.commitTransaction();
+      return post;
+
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error
+    } finally {
+      await queryRunner.release();
+    }
+
+    // const post = this.postRepository.create({
+    //   title,
+    //   content,
+    //   postType,
+    //   user
+    // });
+
+    // await this.postRepository.save(post);
+
+    // await this.postHashtagService.createHashtag(hashTag, post.id);
   }
 
   async findAllPost() {

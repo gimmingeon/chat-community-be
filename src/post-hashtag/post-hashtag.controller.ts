@@ -1,15 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { PostHashtagService } from './post-hashtag.service';
 import { CreatePostHashtagDto } from './dto/create-post-hashtag.dto';
 import { UpdatePostHashtagDto } from './dto/update-post-hashtag.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { UserInfo } from 'src/user/decorator/userInfo.decorator';
 
 @Controller('post-hashtag')
 export class PostHashtagController {
-  constructor(private readonly postHashtagService: PostHashtagService) {}
+  constructor(private readonly postHashtagService: PostHashtagService) { }
 
-  @Post()
-  create(@Body() createPostHashtagDto: CreatePostHashtagDto) {
-    return this.postHashtagService.create(createPostHashtagDto);
+  @UseGuards(AuthGuard("jwt"))
+  @Post("")
+  createHashtag(
+  ) {
   }
 
   @Get()
