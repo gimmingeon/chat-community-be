@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { PostScrapService } from './post-scrap.service';
-import { CreatePostScrapDto } from './dto/create-post-scrap.dto';
 import { UpdatePostScrapDto } from './dto/update-post-scrap.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { UserInfo } from 'src/user/decorator/userInfo.decorator';
 
 @Controller('post-scrap')
 export class PostScrapController {
-  constructor(private readonly postScrapService: PostScrapService) {}
+  constructor(private readonly postScrapService: PostScrapService) { }
 
-  @Post()
-  create(@Body() createPostScrapDto: CreatePostScrapDto) {
-    return this.postScrapService.create(createPostScrapDto);
+  @UseGuards(AuthGuard("jwt"))
+  @Post("")
+  async create(
+    @UserInfo("id") userId: number,
+    @Body() postId: number
+  ) {
+    await this.postScrapService.createScrap(userId, postId);
   }
 
   @Get()

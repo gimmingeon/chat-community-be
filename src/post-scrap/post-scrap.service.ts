@@ -1,11 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePostScrapDto } from './dto/create-post-scrap.dto';
 import { UpdatePostScrapDto } from './dto/update-post-scrap.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PostScrap } from './entities/post-scrap.entity';
+import { Repository } from 'typeorm';
+import { User } from 'src/user/entities/user.entity';
+import { Post } from 'src/post/entities/post.entity';
 
 @Injectable()
 export class PostScrapService {
-  create(createPostScrapDto: CreatePostScrapDto) {
-    return 'This action adds a new postScrap';
+
+  constructor(
+    @InjectRepository(PostScrap)
+    private readonly postScrapRepository: Repository<PostScrap>
+  ) { }
+
+  async createScrap(userId: number, postId: number) {
+
+    const scrap = await this.postScrapRepository.create({
+      user: { id: userId } as User,
+      post: { id: postId } as Post
+    });
+
+    return await this.postScrapRepository.save(scrap);
   }
 
   findAll() {
