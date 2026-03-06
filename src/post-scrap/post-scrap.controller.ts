@@ -12,7 +12,7 @@ export class PostScrapController {
   @Post("")
   async create(
     @UserInfo("id") userId: number,
-    @Body() postId: number
+    @Body("postId") postId: number
   ) {
     await this.postScrapService.createScrap(userId, postId);
   }
