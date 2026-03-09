@@ -3,9 +3,10 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { DataSource, Repository } from 'typeorm';
+import { Brackets, DataSource, Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { PostHashtagService } from 'src/post-hashtag/post-hashtag.service';
+import { SearchPostDto } from './dto/search-post.dto';
 
 @Injectable()
 export class PostService {
@@ -55,19 +56,53 @@ export class PostService {
     // await this.postHashtagService.createHashtag(hashTag, post.id);
   }
 
-  async findAllPost() {
-    const posts = await this.postRepository
+  async findAllPost(searchQuery: SearchPostDto) {
+
+    const { keyword, type, page = 1, limit = 10 } = searchQuery
+
+    const search = this.postRepository
       .createQueryBuilder("post")
       .leftJoinAndSelect("post.user", "user")
       .select([
         "post.id",
         "post.title",
         "post.postType",
+        "post.createdAt",
         "user.nickname",
       ])
-      .getMany();
+    // .where("post.title LIKE :keyword", { keyword: `%${keyword}%` })
+    // .orWhere("post.content LIKE :keyword", { keyword: `%${keyword}%` })
+    // .skip((page - 1) * limit)
+    // .take(limit)
+    // .orderBy("post.createdAt", "DESC")
+    // .getManyAndCount();
 
-    return posts;
+    if (keyword) {
+      search.where(
+        // Brackets: sql에 괄호를 만드는 기능
+        new Brackets((qb) => {
+          qb.where("post.title LIKE :keyword", { keyword: `%${keyword}%` })
+            .orWhere("post.content LIKE :keyword", { keyword: `%${keyword}%` })
+        })
+      )
+    }
+
+    if (type) {
+      search.andWhere("post.postType = :type", { type })
+    }
+
+    const [posts, total] = await search
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy("post.createdAt", "DESC")
+      .getManyAndCount();
+
+    return {
+      posts,
+      total,
+      page,
+      lastPage: Math.ceil(total / limit)
+    }
   }
 
   async findOnePost(id: number) {
@@ -125,4 +160,24 @@ export class PostService {
 
     await this.postRepository.delete({ id });
   }
+
+  // async search(keyword: string, page: number, limit: number) {
+  //   const [posts, total] = await this.postRepository
+  //     .createQueryBuilder("post")
+  //     .leftJoinAndSelect("post.user", "user")
+  //     .select([
+  //       "post.id",
+  //       "post.title",
+  //       "post.postType",
+  //       "user.nickname"
+  //     ])
+  //     .where("post.title LIKE : keyword", { keyword: `%${keyword}%` })
+  //     .orWhere("post.content LIKE : keyword", { keyword: `%${keyword}%` })
+  //     .skip((page - 1) * limit)
+  //     .take(limit)
+  //     .orderBy("post.createdAt", "DESC")
+  //     .getManyAndCount();
+
+  //   return { posts, total }
+  // }
 }
