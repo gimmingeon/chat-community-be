@@ -3,5 +3,4 @@ export enum PostType {
     question = "question",
     project = "project",
     tip = "tip",
-
 }

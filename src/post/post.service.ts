@@ -87,7 +87,7 @@ export class PostService {
       )
     }
 
-    if (type) {
+    if (type && type !== "all") {
       search.andWhere("post.postType = :type", { type })
     }
 

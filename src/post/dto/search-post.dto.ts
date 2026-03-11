@@ -1,6 +1,8 @@
+import { PostType } from "../entities/type/postType.type";
+
 export class SearchPostDto {
     keyword?: string;
-    type?: "nomal" | "question" | "project" | "tip";
+    type?: "all" | PostType;
     page?: number = 1;
     limit?: number = 10;
 
