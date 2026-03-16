@@ -55,9 +55,40 @@ export class UserService {
       throw new UnauthorizedException("이메일 또는 비밀번호를 확인해주세요.");
     }
 
-    const payload = { sub: user.id, email: user.email }
+    const payload = { sub: user.id, email: user.email, nickname: user.nickname }
 
-    return { access_token: await this.jwtService.signAsync(payload) }
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: "15m"
+    })
+
+    const resfreshToken = await this.jwtService.signAsync(payload, {
+      expiresIn: "7d"
+    })
+
+    return { accessToken, resfreshToken }
+  }
+
+  async refresh(refreshToken: string) {
+
+    try {
+
+      const payload = await this.jwtService.verifyAsync(refreshToken);
+
+      const newAccessToken = await this.jwtService.signAsync({
+        id: payload.id,
+        email: payload.email,
+        nickname: payload.nickname
+      }, {
+        expiresIn: "15m"
+      });
+
+      return newAccessToken;
+
+    } catch {
+
+      throw new UnauthorizedException("refresh token 만료");
+    }
+
   }
 
   async findAllMember() {

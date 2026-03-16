@@ -2,13 +2,11 @@ import { BadRequestException, Injectable, NotFoundException, UnauthorizedExcepti
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { UserService } from "src/user/user.service";
 import { Request as RequestType } from 'express';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
-        private readonly userService: UserService,
         private readonly configService: ConfigService,
     ) {
         super({
@@ -35,12 +33,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     async validate(payload: any) {
         //console.log('JWT Payload:', payload);
-        const user = await this.userService.findByEmail(payload.email);
-        if (!user) {
-            throw new NotFoundException('사용자를 찾을 수 없습니다.');
-        }
 
         // req.user에 저장이 된다
-        return { id: user.id, email: user.email, nickname: user.nickname };
+        return { payload };
     }
 }

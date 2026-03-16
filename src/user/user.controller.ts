@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { UserInfo } from './decorator/userInfo.decorator';
 
@@ -15,7 +15,7 @@ export class UserController {
   async signup(@Body() createUserDto: CreateUserDto) {
     await this.userService.signup(createUserDto);
 
-    return { statusCode: 201, message: "회원가입에 성공했습니다." };
+    return { message: "회원가입에 성공했습니다." };
   }
 
   @Post("/login")
@@ -24,9 +24,19 @@ export class UserController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const token = await this.userService.login(loginUserDto);
-    res.cookie('authorization', `Bearer ${token.access_token}`);
+    res.cookie('authorization', `Bearer ${token.accessToken}`, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
 
-    return { statusCode: 201, message: "로그인 성공" };
+    res.cookie("refreshToken", token.resfreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    })
+
+    return { message: "로그인 성공" };
   }
 
   @Get("/allUserInfo")
@@ -48,6 +58,33 @@ export class UserController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
+  }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Post("/logout")
+  logout(@Res({ passthrough: true }) res: Response) {
+
+    res.clearCookie("authorization");
+    res.clearCookie("refreshToken");
+
+    return { message: "로그아웃 성공" }
+  }
+
+  @Post("/refresh")
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response
+  ) {
+
+    const refreshToken = req.cookies["refreshToken"];
+    const newAccessToken = await this.userService.refresh(refreshToken);
+
+    res.cookie("accessToken", `Bearer ${newAccessToken}`, {
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
+    return { message: "token refreshed" };
   }
 
   @Delete(':id')
