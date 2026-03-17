@@ -115,6 +115,8 @@ export class PostService {
         "post.title",
         "post.content",
         "post.postType",
+        "post.createdAt",
+        "post.updatedAt",
         "postHashtag.hashtag",
         "user.id",
         "user.nickname"
