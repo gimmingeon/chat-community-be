@@ -79,16 +79,11 @@ export class UserController {
     const refreshToken = req.cookies["refreshToken"];
     const newAccessToken = await this.userService.refresh(refreshToken);
 
-    res.cookie("accessToken", `Bearer ${newAccessToken}`, {
+    res.cookie("authorization", `Bearer ${newAccessToken}`, {
       httpOnly: true,
       sameSite: "lax",
     });
 
     return { message: "token refreshed" };
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
   }
 }

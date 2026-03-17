@@ -55,7 +55,7 @@ export class UserService {
       throw new UnauthorizedException("이메일 또는 비밀번호를 확인해주세요.");
     }
 
-    const payload = { sub: user.id, email: user.email, nickname: user.nickname }
+    const payload = { id: user.id, email: user.email, nickname: user.nickname }
 
     const accessToken = await this.jwtService.signAsync(payload, {
       expiresIn: "15m"

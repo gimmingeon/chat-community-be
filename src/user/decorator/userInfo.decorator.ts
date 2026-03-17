@@ -12,9 +12,10 @@ export const UserInfo = createParamDecorator(
         // user에 request에서 가져온 정보 저장 (여기서는 cookie에 저장된 jwt 토큰의 유저 정보)
         const user = request.user;
 
-        console.log(user);
+        console.log("fsd", user);
 
         if (!user) return null;
+        if (!data) { return user }
 
         // 여러 필드를 요청한 경우 객체로 반환하는 코드
         // data가 배열인지 확인
@@ -29,9 +30,6 @@ export const UserInfo = createParamDecorator(
 
         console.log("유저 데코레이터 " + user[data]);
 
-        if (data) {
-            return user[data];
-        }
-        return user;
+        return user[data];
     },
 );

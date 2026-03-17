@@ -35,6 +35,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         //console.log('JWT Payload:', payload);
 
         // req.user에 저장이 된다
-        return { payload };
+        return {
+            id: payload.id,
+            email: payload.email,
+            nickname: payload.nickname
+        };
     }
 }
