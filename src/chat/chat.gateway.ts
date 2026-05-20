@@ -1,10 +1,11 @@
 import {
+    ConnectedSocket,
     MessageBody,
     SubscribeMessage,
     WebSocketGateway,
     WebSocketServer
 } from "@nestjs/websockets";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 
 @WebSocketGateway({
     cors: {
@@ -16,12 +17,19 @@ export class ChatGateway {
     @WebSocketServer()
     server: Server
 
+    @SubscribeMessage("joinRoom")
+    handleJoinRoom(
+        @MessageBody() chatRoomId: number,
+        @ConnectedSocket() socket: Socket
+    ) {
+        socket.join(`room-${chatRoomId}`)
+    }
+
     @SubscribeMessage("message")
     handleMessage(
-        @MessageBody() data: string
+        @MessageBody() data: { roomId: number, message: string },
+        // @ConnectedSocket() socket: Socket
     ) {
-        console.log(data);
-
-        this.server.emit("message", data);
+        this.server.to(`room-${data.roomId}`).emit("message", data.message);
     }
 }
