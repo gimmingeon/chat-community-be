@@ -15,6 +15,7 @@ export class ChatController {
         @Body() roomData: { postId: number, postUserId: number },
         @UserInfo("id") userId: number
     ) {
+        // console.log("채팅 컨트롤러: ", roomData.postId);
         return await this.chatService.createChatRoom(
             roomData.postId,
             roomData.postUserId,

@@ -6,13 +6,30 @@ export const UserInfo = createParamDecorator(
     // data: 데코레이터에 전달된 값(선택), ctx: 실행 컨텍스트로 현재 요텅에 대한 정보 제공
     (data: string | string[], ctx: ExecutionContext) => {
 
-        // ctx에서 http 요청 객체(= request에서 가져옴) 추출
-        const request = ctx.switchToHttp().getRequest();
+        // 타입이 http인지 웹소켓인지 구분함
+        const type = ctx.getType();
 
-        // user에 request에서 가져온 정보 저장 (여기서는 cookie에 저장된 jwt 토큰의 유저 정보)
-        const user = request.user;
+        let user;
 
-        console.log("fsd", user);
+        if (type === "http") {
+            // ctx에서 http 요청 객체(= request에서 가져옴) 추출
+            const request = ctx.switchToHttp().getRequest();
+
+            // user에 request에서 가져온 정보 저장 (여기서는 cookie에 저장된 jwt 토큰의 유저 정보)
+            user = request.user;
+        }
+
+        if (type === "ws") {
+            // ctx에서 웹소켓 요청 객체(request에서 가져옴) 추출
+            const client = ctx.switchToWs().getClient();
+
+            console.log("클라이언트: ", client);
+
+            // 소켓 연결 시 저장한 사용자 정보
+            user = client.data.user
+
+            console.log("유저: ", user);
+        }
 
         if (!user) return null;
         if (!data) { return user }
@@ -27,8 +44,6 @@ export const UserInfo = createParamDecorator(
                 return acc;
             }, {});
         }
-
-        console.log("유저 데코레이터 " + user[data]);
 
         return user[data];
     },
