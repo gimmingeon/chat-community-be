@@ -23,5 +23,5 @@ export class ChatRoom {
     myId: number;
 
     @OneToMany(() => Chat, (chat) => chat.chatRoom)
-    chat: Chat;
+    chat: Chat[];
 }

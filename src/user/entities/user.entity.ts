@@ -40,7 +40,7 @@ export class User {
     postScrap: PostScrap[];
 
     @OneToMany(() => Chat, (chat) => chat.user)
-    chat: Chat;
+    chat: Chat[];
 
 
 }
