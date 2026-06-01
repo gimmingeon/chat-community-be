@@ -1,4 +1,5 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Chat } from "./chat.entity";
 
 @Index(
     ["postId", "postUserId", "myId"],
@@ -20,4 +21,7 @@ export class ChatRoom {
 
     @Column({ unsigned: true })
     myId: number;
+
+    @OneToMany(() => Chat, (chat) => chat.chatRoom)
+    chat: Chat;
 }

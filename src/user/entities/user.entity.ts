@@ -1,3 +1,4 @@
+import { Chat } from "src/chat/entities/chat.entity";
 import { Comment } from "src/comment/entities/comment.entity";
 import { PostScrap } from "src/post-scrap/entities/post-scrap.entity";
 import { Post } from "src/post/entities/post.entity";
@@ -20,6 +21,12 @@ export class User {
     @Column({ type: 'varchar', unique: true, nullable: false })
     nickname: string;
 
+    @CreateDateColumn({ type: "timestamp" })
+    createdAt: Date;
+
+    @UpdateDateColumn({ type: "timestamp" })
+    updatedAt: Date;
+
     @OneToMany(() => UserSkill, (userSkill) => userSkill.user, { cascade: true })
     skills: UserSkill[];
 
@@ -32,9 +39,8 @@ export class User {
     @OneToMany(() => PostScrap, (postScrap) => postScrap.user)
     postScrap: PostScrap[];
 
-    @CreateDateColumn({ type: "timestamp" })
-    createdAt: Date;
+    @OneToMany(() => Chat, (chat) => chat.user)
+    chat: Chat;
 
-    @UpdateDateColumn({ type: "timestamp" })
-    updatedAt: Date;
+
 }

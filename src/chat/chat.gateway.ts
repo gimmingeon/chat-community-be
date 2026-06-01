@@ -88,6 +88,6 @@ export class ChatGateway {
         @MessageBody() data: { roomId: number, message: string },
         // @ConnectedSocket() socket: Socket
     ) {
-        this.server.to(`room-${data.roomId}`).emit("message", data.message);
+        this.server.to(`room-${data.roomId}`).emit("user-message", data.message);
     }
 }
