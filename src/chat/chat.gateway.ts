@@ -55,9 +55,10 @@ export class ChatGateway {
                 process.env.JWT_SECRET_KEY
             )
 
-            console.log("유저: ", user);
+            // console.log("유저: ", user);
 
             // 이후 이벤트에서 사용 가능
+            // socket.data에 유저 정보 저장
             socket.data.user = user;
 
         } catch (error) {
@@ -84,10 +85,29 @@ export class ChatGateway {
     }
 
     @SubscribeMessage("message")
-    handleMessage(
+    async handleMessage(
         @MessageBody() data: { roomId: number, message: string },
-        // @ConnectedSocket() socket: Socket
+        @ConnectedSocket() socket: Socket
     ) {
-        this.server.to(`room-${data.roomId}`).emit("user-message", data.message);
+        const user = socket.data.user;
+
+        const chat = await this.chatService.createChat(user.id, data.roomId, data.message);
+
+        console.log("보낸 채팅", { chat, user });
+        this.server.to(`room-${data.roomId}`)
+            .emit("user-message", {
+                ...chat,
+                user: { id: user.id, nickname: user.nickname }
+            });
+    }
+
+    @SubscribeMessage("loadMessage")
+    async handleLoadMessage(
+        @MessageBody() roomId: number,
+        //@ConnectedSocket() socket: Socket
+    ) {
+        const chat = await this.chatService.getChat(roomId);
+
+        this.server.to(`room-${roomId}`).emit("load-message", chat);
     }
 }
