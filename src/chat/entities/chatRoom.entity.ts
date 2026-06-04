@@ -1,8 +1,10 @@
-import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Chat } from "./chat.entity";
+import { User } from "src/user/entities/user.entity";
 
 @Index(
     ["postId", "postUserId", "myId"],
+    // 이렇게 unique를 넣음으로서 동시에 눌렀을때 중복되어 생성되는 것을 방지할 수 있다
     { unique: true }
 )
 
@@ -24,4 +26,11 @@ export class ChatRoom {
 
     @OneToMany(() => Chat, (chat) => chat.chatRoom)
     chat: Chat[];
+
+    @ManyToOne(() => User)
+    @JoinColumn({
+        name: "myId"
+    })
+    user: User;
+
 }

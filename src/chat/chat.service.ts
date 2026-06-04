@@ -18,12 +18,17 @@ export class ChatService {
     async createChatRoom(postId: number, postUserId: number, myId: number) {
 
         if (postUserId === myId) {
-            console.log(await this.chatRoomRepository.find({
-                where: { postId, postUserId }
-            }))
-            return await this.chatRoomRepository.find({
-                where: { postId, postUserId }
-            })
+            return await this.chatRoomRepository
+                .createQueryBuilder("chatRoom")
+                .leftJoinAndSelect("chatRoom.user", "user")
+                .where("chatRoom.postId = :postId", { postId })
+                .select([
+                    "chatRoom.id",
+                    "chatRoom.postId",
+                    "chatRoom.myId",
+                    "user.nickname"
+                ])
+                .getMany();
         }
 
         const chatRoom = await this.chatRoomRepository.findOneBy({ postId, postUserId, myId })
