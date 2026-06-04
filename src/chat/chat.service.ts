@@ -16,6 +16,16 @@ export class ChatService {
 
     // 채팅룸
     async createChatRoom(postId: number, postUserId: number, myId: number) {
+
+        if (postUserId === myId) {
+            console.log(await this.chatRoomRepository.find({
+                where: { postId, postUserId }
+            }))
+            return await this.chatRoomRepository.find({
+                where: { postId, postUserId }
+            })
+        }
+
         const chatRoom = await this.chatRoomRepository.findOneBy({ postId, postUserId, myId })
 
         if (chatRoom) {
