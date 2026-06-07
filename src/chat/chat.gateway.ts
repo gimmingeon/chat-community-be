@@ -81,7 +81,13 @@ export class ChatGateway {
 
         await this.chatService.chatJoinRoom(chatRoomId, user.id);
 
-        socket.join(`room-${chatRoomId}`)
+        socket.join(`room-${chatRoomId}`);
+
+        const title = await this.chatService.getTitle(chatRoomId);
+
+        // 여기서 this.server.to가 아닌 socet.emit인 이유는
+        // this.server.to는 해당 방의 모은 참가자에게 보낸다면 socket.emit은 조회한 당사자에게만 보낸다.
+        socket.emit("get-postTitle", { title, userId: user.id });
     }
 
     @SubscribeMessage("message")
@@ -93,7 +99,6 @@ export class ChatGateway {
 
         const chat = await this.chatService.createChat(user.id, data.roomId, data.message);
 
-        console.log("보낸 채팅", { chat, user });
         this.server.to(`room-${data.roomId}`)
             .emit("user-message", {
                 ...chat,

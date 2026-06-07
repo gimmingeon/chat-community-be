@@ -1,6 +1,7 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Chat } from "./chat.entity";
 import { User } from "src/user/entities/user.entity";
+import { Post } from "src/post/entities/post.entity";
 
 @Index(
     ["postId", "postUserId", "myId"],
@@ -32,5 +33,11 @@ export class ChatRoom {
         name: "myId"
     })
     user: User;
+
+    @ManyToOne(() => Post)
+    @JoinColumn({
+        name: "postId"
+    })
+    post: Post;
 
 }

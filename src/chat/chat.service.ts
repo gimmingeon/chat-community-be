@@ -28,6 +28,7 @@ export class ChatService {
                     "chatRoom.myId",
                     "user.nickname"
                 ])
+                .orderBy("chatRoom.id", "ASC")
                 .getMany();
         }
 
@@ -50,6 +51,15 @@ export class ChatService {
         if (chatRoom.myId !== userId && chatRoom.postUserId !== userId) {
             throw new ForbiddenException("허락되지 않은 채팅방 유저입니다.");
         }
+    }
+
+    async getTitle(chatRoomId: number) {
+        const title = await this.chatRoomRepository.findOne({
+            where: { id: chatRoomId },
+            relations: { post: true }
+        });
+
+        return title.post.title;
     }
 
 
