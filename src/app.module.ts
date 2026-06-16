@@ -23,7 +23,7 @@ import { ChatModule } from './chat/chat.module';
         username: configService.get<string>("DB_USERNAME"),
         password: configService.get<string>("DB_PASSWORD"),
         database: configService.get<string>("DB_NAME"),
-        synchronize: configService.get<boolean>("DB_SYNC"),
+        synchronize: configService.get("DB_SYNC") === "true",
         // 자동으로 엔티티를 불러오는 기능
         autoLoadEntities: true,
         logging: true
